@@ -1,16 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client'
 
-const prismaBase = globalForPrisma.prisma ?? new PrismaClient();
+const globalForPrisma = globalThis;
 
-export const prisma = prismaBase.$extends({
-  query: {
-    cart: {
-      async update({ args, query }) {
-        args.data = { ...args.data, updatedAt: new Date() };
-        return query(args);
-      },
-    },
-  },
-});
+export const prisma = globalForPrisma.prisma ?? new PrismaClient()
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prismaBase;
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma

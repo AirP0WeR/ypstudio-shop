@@ -13,6 +13,7 @@ model Product {
   category     String
   countInStock Int
   description  String
+  imageUrl     String
   name         String
   price        Int
   createdAt    DateTime @default(now())
