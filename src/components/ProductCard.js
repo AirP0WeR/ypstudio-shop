@@ -12,7 +12,7 @@ export default function ProductCard({ product }) {
       href={"/products/" + product.id}
       className="card w-full bg-base-100 hover:shadow-xl transition-shadow"
     >
-      <fugure>
+      <figure>
         <Image
           src={product.imageUrl}
           alt={product.name}
@@ -20,7 +20,7 @@ export default function ProductCard({ product }) {
           height={400}
           className="h-48 object-cover"
         />
-      </fugure>
+      </figure>
       <div className="card-body">
         <h2 className="card-title"></h2>
         {product.name}

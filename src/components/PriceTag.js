@@ -1,4 +1,4 @@
-import { formatPrice } from "@/lib/fotmat";
+import { formatPrice } from "@/lib/format";
 
 export default function PriceTag({price, className}) {
     return (
