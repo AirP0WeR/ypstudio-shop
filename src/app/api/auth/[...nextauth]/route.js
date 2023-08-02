@@ -11,6 +11,9 @@ export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     EmailProvider({
+      profile(profile) {
+        return { role: profile.role ?? "user" }
+      },
       server: {
         host: process.env.EMAIL_SERVER_HOST,
         port: process.env.EMAIL_SERVER_PORT,
@@ -37,6 +40,7 @@ export const authOptions = {
   callbacks: {
     session({ session, user }) {
       session.user.id = user.id;
+      session.user.role = user.role;
       return session;
     },
   },
