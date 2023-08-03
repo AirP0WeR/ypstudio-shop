@@ -8,12 +8,12 @@ import AppleProvider from "next-auth/providers/apple";
 import { mergeAnonymousCartIntoUserCart } from "@/lib/db/cart";
 
 export const authOptions = {
+  session: {
+    strategy: "jwt"
+  },
   adapter: PrismaAdapter(prisma),
   providers: [
     EmailProvider({
-      profile(profile) {
-        return { role: profile.role ?? "user" }
-      },
       server: {
         host: process.env.EMAIL_SERVER_HOST,
         port: process.env.EMAIL_SERVER_PORT,
@@ -38,9 +38,17 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    session({ session, user }) {
-      session.user.id = user.id;
-      session.user.role = user.role;
+    async jwt({ token, user }) {
+      if(user) {
+        token.role = user.role,
+        token.phonenumber = user.phonenumber
+      }
+      return token
+    },
+    session({ session, token }) {
+      session.user.id = token.id;
+      session.user.role = token.role;
+      session.user.phonenumber = token.phonenumber;
       return session;
     },
   },

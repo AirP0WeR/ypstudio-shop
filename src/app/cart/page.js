@@ -2,6 +2,7 @@ import { getCart } from "@/lib/db/cart";
 import { formatPrice } from "@/lib/format";
 import CartEntry from "./CartEntry";
 import { setProductQuantity } from "./actions";
+import Link from "next/link";
 
 export const metadata = {
   title: "Your Cart - Flowmazon",
@@ -25,7 +26,19 @@ export default async function CartPage() {
         <p className="mb-3 font-bold">
           Total: {formatPrice(cart?.subtotal || 0)}
         </p>
-        <button className="btn-primary btn sm:w-[200px]">Checkout</button>
+        {!cart?.items.length ? (
+          <Link href="/">
+          <button className="btn-primary btn sm:w-[200px]">
+            В магазин
+          </button>
+        </Link>
+        ) : (
+          <Link href="/checkout">
+            <button className="btn-primary btn sm:w-[200px]">
+              Оформить заказ
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -34,7 +34,7 @@ export default async function Navbar() {
           </Link>
         </div>
         <div>
-          <h1>{session?.user.role && (session?.user.role)
+          <h1>{session?.user.role && (session?.user.role ? session?.user.role : "user")
           }</h1>
         </div>
         <div className="flex-none gap-2">

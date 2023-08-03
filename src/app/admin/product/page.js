@@ -31,7 +31,7 @@ async function addProduct(formData) {
   await prisma.product.create({
     data: { name, brand, category, countInStock, description, imageUrl, price },
   });
-//   redirect("/");
+  redirect("/");
 }
 
 export default function AppProductPage() {

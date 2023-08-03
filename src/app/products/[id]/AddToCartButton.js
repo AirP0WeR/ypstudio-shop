@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-
+import Link from "next/link";
+import { revalidatePath } from "next/cache";
 
 export default function AddToCartButton({
   productId,
@@ -40,7 +41,9 @@ export default function AddToCartButton({
       </button>
       {isPending && <span className="loading loading-spinner loading-md" />}
       {!isPending && success && (
-        <span className="text-success">Added to Cart.</span>
+        <Link href="/cart" prefetch={false}>
+          <span className="text-success">Перейти в корзину</span>
+        </Link>
       )}
     </div>
   );

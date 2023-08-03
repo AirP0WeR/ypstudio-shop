@@ -38,7 +38,7 @@ export default function CartEntry({
           </Link>
           <div>Price: {formatPrice(product.price)}</div>
           <div className="my-1 flex items-center gap-2">
-            Quantity:
+            Количество:
             <select
               className="select-bordered select w-full max-w-[80px]"
               defaultValue={quantity}
@@ -54,7 +54,7 @@ export default function CartEntry({
             </select>
           </div>
           <div className="flex items-center gap-3">
-            Total: {formatPrice(product.price * quantity)}
+            Всего: {formatPrice(product.price * quantity)}
             {isPending && (
               <span className="loading loading-spinner loading-sm" />
             )}

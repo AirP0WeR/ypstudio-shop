@@ -1,12 +1,12 @@
 "use client";
 
-
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
-
+import Link from "next/link";
 
 export default function UserMenuButton({ session }) {
   const user = session?.user;
+  const userRole = session?.user.role;
 
   return (
     <div className="dropdown-end dropdown">
@@ -39,15 +39,50 @@ export default function UserMenuButton({ session }) {
         tabIndex={0}
         className="dropdown-content menu rounded-box menu-sm z-30 mt-3 w-52 bg-base-100 p-2 shadow"
       >
-        <li>
-          {user ? (
-            <button onClick={() => signOut({ callbackUrl: "/" })}>
-              Sign Out
+        {user && userRole === "admin" && (
+          <>
+            <Link href="/admin/productlist">
+              <li>
+                <button>Товары</button>
+              </li>
+            </Link>
+
+            <li>
+              <Link href="/admin/orderlist">
+                <button>Заказы</button>
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/userslist">
+                <button>Пользователи</button>
+              </Link>
+            </li>
+          </>
+        )}
+
+        {user ? (
+          <>
+            <Link href="/profile">
+              <li>
+                <button>Профиль</button>
+              </li>
+            </Link>
+            <li>
+              <button
+                className="font-bold"
+                onClick={() => signOut({ callbackUrl: "/" })}
+              >
+                Выйти
+              </button>
+            </li>
+          </>
+        ) : (
+          <li>
+            <button className="font-bold" onClick={() => signIn()}>
+              Войти
             </button>
-          ) : (
-            <button onClick={() => signIn()}>Sign In</button>
-          )}
-        </li>
+          </li>
+        )}
       </ul>
     </div>
   );
