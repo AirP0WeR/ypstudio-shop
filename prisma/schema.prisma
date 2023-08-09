@@ -99,3 +99,16 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verificationtokens")
 }
+
+model Sdek {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  access_token String
+  token_type   String
+  expires_in   DateTime
+  scope        String
+  jti          String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("sdek")
+}
