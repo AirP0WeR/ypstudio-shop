@@ -10,11 +10,11 @@ export default async function CheckoutPage() {
       <div className="text-sm breadcrumbs">
         <ul>
           <li>
-            <Link className="font-bold link" href="/checkout">Контактная информация</Link>
+            <Link className="font-bold link" href="/checkout">
+              Контактная информация
+            </Link>
           </li>
-          <li>
-            <li>Доставка</li>
-          </li>
+          <li>Доставка</li>
           <li>Оплата</li>
         </ul>
       </div>

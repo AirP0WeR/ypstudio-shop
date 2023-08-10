@@ -12,10 +12,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="flex flex-col h-screen justify-between">
+      <body className="flex flex-col h-screen">
         <SessionProvider>
           <Navbar />
-          <main className="p-4 w-full max-w-7xl m-auto min-w-[300px] mb-auto flex-auto">{children}</main>
+          <main className="p-4 w-full max-w-7xl m-auto min-w-[300px] flex-grow">{children}</main>
           <Footer />
         </SessionProvider>
       </body>

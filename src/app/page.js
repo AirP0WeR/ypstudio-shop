@@ -29,12 +29,11 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <div className="my-4 grid grid-col-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {products.slice(1).map(product => (
-          <ProductCard product={product} key={product.id}/>
-          ))}
+      <div className="mt-10 grid justify-items-center grid-col-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+        {products.map((product) => (
+          <ProductCard product={product} key={product.id} />
+        ))}
       </div>
-
     </div>
   );
 }

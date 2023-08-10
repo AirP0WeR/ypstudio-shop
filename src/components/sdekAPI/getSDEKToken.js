@@ -1,14 +1,8 @@
 import { prisma } from "@/lib/db/prisma";
+import { SDEKTokenURL } from "./constants";
 
 async function fetchSDEKToken() {
-  const client_id = process.env.SDEK_CLIENT_ID;
-  const client_secret = process.env.SDEK_CLIENT_SECRET;
-  const req = await fetch(
-    `https://api.edu.cdek.ru/v2/oauth/token?parameters&grant_type=client_credentials&client_id=${client_id}&client_secret=${client_secret}`,
-
-    { method: "post" }
-  );
-
+  const req = await fetch(SDEKTokenURL, { method: "post" ,  cache: 'no-store' });
   return req.json();
 }
 
@@ -39,12 +33,11 @@ export async function getSDEKToken() {
 
   if (sdekDB) {
     console.log("token not expired");
-
     return sdekDB.access_token;
   } else {
     console.log("refresh token");
     const token = await fetchSDEKToken();
-    await setToDBSDEKToken(token);
+    const sendToken = await setToDBSDEKToken(token);
     return token.access_token;
   }
 }
