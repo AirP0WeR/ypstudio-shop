@@ -2,8 +2,17 @@ import { prisma } from "@/lib/db/prisma";
 import { SDEKTokenURL } from "./constants";
 
 async function fetchSDEKToken() {
-  const req = await fetch(SDEKTokenURL, { method: "post" ,  cache: 'no-store' });
-  return req.json();
+  let response;
+  try {
+    response = await fetch(SDEKTokenURL, { method: "post", cache: "no-store" });
+  } catch (error) {
+    console.log("There was an error", error);
+  }
+  if (response?.ok) {
+    return response.json();
+  } else {
+    console.log(`HTTP Response Code: ${response?.status}`);
+  }
 }
 
 async function setToDBSDEKToken(req) {

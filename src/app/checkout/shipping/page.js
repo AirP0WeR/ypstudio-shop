@@ -1,14 +1,13 @@
 // import { authOptions } from "../../api/auth/[...nextauth]/route";
 // import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { getSDEKCities } from "@/components/sdekAPI/getCities";
 import { ShippingForm } from "./ShippingForm";
-import { getSDEKTarifByCode } from "@/components/sdekAPI/getTarifByCode";
+
 
 export default async function CheckoutPage() {
   // const session = await getServerSession(authOptions);
 
-  const cities = await getSDEKCities();
+
   // const tarif = await getSDEKTarifByCode( 44 );
   // console.log(tarif);
 
@@ -31,7 +30,7 @@ export default async function CheckoutPage() {
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <ShippingForm cities={cities} getSDEKTarifByCode={getSDEKTarifByCode} />
+          <ShippingForm  />
 
           <Link href="/checkout/payment">
             <button className="btn btn-primary">Далее</button>

@@ -3,8 +3,9 @@ import { SDEKGetTarifByCodeURL, SDEKGetTarifByCodeBody } from "./constants";
 import { getSDEKToken } from "./getSDEKToken";
 
 export async function getSDEKTarifByCode(req) {
-
+  console.log(req)
   const bodyReq = SDEKGetTarifByCodeBody(req);
+  console.log(bodyReq)
   const token = await getSDEKToken();
   const data = await fetch(SDEKGetTarifByCodeURL, {
     method: "post",
@@ -14,7 +15,8 @@ export async function getSDEKTarifByCode(req) {
       "Content-Type": "application/json",
     },
     next: { revalidate: 3600 },
-  });
+  }).then(response=>response.json())
+
   console.log(data)
-  return data.json();
+  return data
 }

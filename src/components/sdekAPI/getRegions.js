@@ -1,11 +1,10 @@
-'use server'
-import { SDEKCitiesURL } from "./constants";
+import { SDEKRegionsURL } from "./constants";
 import { getSDEKToken } from "./getSDEKToken";
 
-export async function getSDEKCities(code) {
+export async function getSDEKRegions() {
   const token = await getSDEKToken();
   const data = await fetch(
-    SDEKCitiesURL(code),
+    SDEKRegionsURL,
     {
       headers: {
         Authorization: "Bearer " + token,

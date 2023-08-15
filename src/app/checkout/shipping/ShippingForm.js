@@ -1,13 +1,15 @@
 "use client";
-import { Autocomplete, TextField } from "@mui/material";
-import { useState, useEffect, useTransition } from "react";
-// import { getSDEKTarifByCode } from "@/components/sdekAPI/getTarifByCode";
+import { AddressSuggestions } from "react-dadata";
+import "react-dadata/dist/react-dadata.css";
+import { useState, useTransition, useEffect } from "react";
+import { getSDEKAvailableTarif } from "@/components/sdekAPI/getAvailableTarif";
+import { findSDEKById } from "@/components/daDataAPI/findById";
 
-export function ShippingForm({ cities }, getSDEKTarifByCode) {
-  const [city, setCity] = useState(cities[0]);
+export function ShippingForm() {
+  const [value, setValue] = useState();
+  const [tarifs, setTarifs] = useState();
+  const [isPending, startTransition] = useTransition();
   const [isClient, setIsClient] = useState(false);
-//   const [isPending, startTransition] = useTransition();
-//   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -16,45 +18,70 @@ export function ShippingForm({ cities }, getSDEKTarifByCode) {
   return (
     <div>
       {isClient && (
-        <Autocomplete
-          className="my-8"
-          value={city}
-          onChange={(event, newValue) => {
-            setCity(newValue);
-          }}
-          disablePortal
-          options={cities}
-          getOptionLabel={(data) =>
-            data.city + ", " + data.region + ", " + data.country
-          }
-          sx={{ width: 400 }}
-          renderOption={(props, cities) => {
-            return (
-              <li {...props} key={cities.code}>
-                {cities.city + ", " + cities.region + ", " + cities.country}
-              </li>
-            );
-          }}
-          isOptionEqualToValue={(cities, value) => cities.code === value.code}
-          renderInput={(params) => (
-            <TextField {...params} label="Выбрать город" />
-          )}
+        <AddressSuggestions
+          token={process.env.NEXT_PUBLIC_DA_DATA_KEY}
+          value={value}
+          onChange={setValue}
+          minChars={3}
+          // defaultQuery={"г Москва"}
+          delay={500}
         />
       )}
 
-      {city && <h1>{city.code}</h1>}
-      {/* <button
+      <h1>
+        {value
+          ? value.data.city_kladr_id !== null
+            ? JSON.stringify(value.data.city_kladr_id)
+            : "Выберите другой город"
+          : "Выберите город"}
+      </h1>
+
+      <button
+        disabled={!value}
         className="btn-primary btn"
-        onClick={() => {
-
+        onClick={() =>
           startTransition(async () => {
-            await getSDEKTarifByCode(44);
-
-          });
-        }}
+            const sdekId = await findSDEKById(value.data.city_kladr_id);
+            const tarifs = await getSDEKAvailableTarif(
+              sdekId.suggestions[0].data.cdek_id
+            );
+            setTarifs(tarifs);
+          })
+        }
       >
-        Add to Cart
-      </button> */}
+        найти когд города СДЭК и тариф
+      </button>
+
+      <div>
+        Всего:
+        {tarifs
+          ? tarifs.tariff_codes.map(
+              (e) =>
+                (e.tariff_code === 482 ||
+                  e.tariff_code === 483 ||
+                  e.tariff_code === 486) && (
+                  <li key={e.tariff_code}>
+                    {"Стоимость " +
+                      e.delivery_sum +
+                      " р" +
+                      " " +
+                      e.tariff_code +
+                      " " +
+                      e.tariff_name +
+                      " " +
+                      e.tariff_description +
+                      " " +
+                      e.delivery_mode +
+                      " " +
+                      e.calendar_min +
+                      " " +
+                      e.calendar_max}
+                  </li>
+                )
+            )
+          : null}
+        {isPending && <span className="loading loading-spinner loading-sm" />}
+      </div>
     </div>
   );
 }

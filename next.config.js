@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { hostname: "lh3.googleusercontent.com" },
+      { hostname: "avatars.yandex.net" },
     ],
   },
   experimental: {
