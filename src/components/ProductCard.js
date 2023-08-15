@@ -8,28 +8,11 @@ export default function ProductCard({ product }) {
     1000 * 60 * 60 * 24 * 7;
 
   return (
-    <Link href={"/products/" + product.id} className="">
-      {/* <figure>
-        <Image
-          src={product.imageUrl}
-          alt={product.name}
-          width={800}
-          height={400}
-          className="h-48 object-cover"
-        />
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title"></h2>
-        {product.name}
-        {isNew && <div className="badge badge-secondary">NEW</div>}
-        <p>{product.description}</p>
-        <p>{product.price}</p>
-        <PriceTag price={product.price} />
-      </div> */}
-
+    <Link
+      href={"/products/" + product.id}
+      className="card card-compact hover:bg-base-200 transition-all duration-200 hover:-translate-y-1"
+    >
       <div className="relative">
-
-
         <div className="flex items-center justify-center absolute top-0 right-0 left-0 bottom-0 mx-6">
           <Image
             className="rounded-full"
@@ -39,11 +22,14 @@ export default function ProductCard({ product }) {
             alt={product.name}
           />
         </div>
-        <div className="h-1/5 flex flex-col justify-center absolute top-0 right-0 left-0 bottom-0 bg-white">
+        <div className=" rounded-lg h-1/5 flex flex-col justify-center absolute top-0 right-0 left-0 bottom-0 bg-white">
           <h1 className="ml-5 font-bold">{product.name}</h1>
-          <PriceTag price={product.price}  className={"ml-5 font-bold bg-white"}/>
+          <PriceTag
+            price={product.price}
+            className={"ml-5 font-bold bg-white"}
+          />
         </div>
-        <div className="h-1/5 flex items-center justify-center absolute right-0 left-0 bottom-0 bg-black opacity-40">
+        <div className="rounded-lg h-1/5 flex items-center justify-center absolute right-0 left-0 bottom-0 bg-black opacity-40" >
           Hello
         </div>
         <Image

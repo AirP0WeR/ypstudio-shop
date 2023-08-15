@@ -10,48 +10,59 @@ export function ShippingForm() {
   const [tarifs, setTarifs] = useState();
   const [isPending, startTransition] = useTransition();
   const [isClient, setIsClient] = useState(false);
+  const [isCity, setCity] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-
   return (
     <div>
+      <h1 className="text-xl mt-5">Выберите город</h1>
       {isClient && (
         <AddressSuggestions
           token={process.env.NEXT_PUBLIC_DA_DATA_KEY}
           value={value}
           onChange={setValue}
           minChars={3}
-          // defaultQuery={"г Москва"}
+          hintText={"Выберите вариант или продолжите ввод"}
           delay={500}
+          filterFromBound="city"
+          filterToBound="city"
+          inputProps={{ disabled: isCity, placeholder: "г Москва" }}
         />
       )}
 
-      <h1>
-        {value
-          ? value.data.city_kladr_id !== null
-            ? JSON.stringify(value.data.city_kladr_id)
-            : "Выберите другой город"
-          : "Выберите город"}
-      </h1>
+      {value && <h1>Город доставки {value.data.region_with_type + ", " + value.data.city_with_type}</h1> }
 
       <button
         disabled={!value}
-        className="btn-primary btn"
+        className="btn-primary btn mt-5"
         onClick={() =>
           startTransition(async () => {
             const sdekId = await findSDEKById(value.data.city_kladr_id);
-            const tarifs = await getSDEKAvailableTarif(
-              sdekId.suggestions[0].data.cdek_id
-            );
-            setTarifs(tarifs);
+            if (sdekId.suggestions.length !== 0) {
+              const tarifs = await getSDEKAvailableTarif(
+                sdekId.suggestions[0].data.cdek_id
+              );
+              setTarifs(tarifs);
+              setCity(true);
+            } else {
+              alert("В данный город нет доставки, выберите другой город");
+            }
           })
         }
       >
         найти когд города СДЭК и тариф
       </button>
-
+      <button
+        className="btn btn-primary w-50 ml-5"
+        disabled={!isCity}
+        onClick={() => {
+          setCity(false);
+        }}
+      >
+        Изменить город
+      </button>
       <div>
         Всего:
         {tarifs

@@ -9,7 +9,7 @@ import { mergeAnonymousCartIntoUserCart } from "@/lib/db/cart";
 
 export const authOptions = {
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -39,11 +39,12 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if(user) {
-        token.role = user.role,
-        token.phonenumber = user.phonenumber
+      if (user) {
+        (token.id = user.id),
+          (token.role = user.role),
+          (token.phonenumber = user.phonenumber);
       }
-      return token
+      return token;
     },
     session({ session, token }) {
       session.user.id = token.id;

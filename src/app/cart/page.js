@@ -4,9 +4,6 @@ import CartEntry from "./CartEntry";
 import { setProductQuantity } from "./actions";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Your Cart - Flowmazon",
-};
 
 export default async function CartPage() {
   const cart = await getCart();
