@@ -13,6 +13,11 @@ export const SDEKGetTarifByCodeURL =
 export const SDEKGetAvailableTarifURL =
   "https://api.edu.cdek.ru/v2/calculator/tarifflist";
 
+export function SDEKPVZURL(code, type) {
+  const req = `https://api.edu.cdek.ru/v2/deliverypoints?city_code=${code}&type=${type}`;
+  return req
+}
+
 export function SDEKGetTarifByCodeBody(toLocation) {
   const req = {
     tariff_code: "483",
