@@ -35,7 +35,7 @@ export default async function CartItems() {
 
   return (
     <div>
-      <h1 className="mb-6 text-3xl font-bold">В корзине</h1>
+      <h1 className="mb-5 text-3xl font-bold text-center">В корзине</h1>
 
       <div className="flex flex-col items-end sm:items-center bg-slate-100 mb-3">
         <div className="my-3">

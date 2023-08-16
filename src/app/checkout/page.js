@@ -29,10 +29,10 @@ export default async function CheckoutPage() {
         <li className="step">Оплата</li>
       </ul>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-5">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-5">
         <div>
           <form action={editProfile} className="form-control">
-            <h1 className="text-3xl font-bold">Контакты</h1>
+            <h1 className="text-3xl font-bold text-center">Контакты</h1>
 
             {/* Форма Почта */}
             <div className="form-control w-full max-w-xs">

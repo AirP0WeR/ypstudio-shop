@@ -17,14 +17,8 @@ export default async function CheckoutPage() {
         <li className="step">Оплата</li>
       </ul>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-5">
-        <div className="form-control">
-          <h1 className="text-3xl font-bold">Выберите способ доставки</h1>
-
-          <ShippingForm />
-
-
-        </div>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-5">
+        <ShippingForm />
 
         <CartItems />
       </div>
