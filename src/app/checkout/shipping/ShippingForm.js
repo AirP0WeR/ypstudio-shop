@@ -5,6 +5,8 @@ import { useState, useTransition, useEffect } from "react";
 import { getSDEKAvailableTarif } from "@/components/sdekAPI/getAvailableTarif";
 import { findSDEKById } from "@/components/daDataAPI/findById";
 import { getSDEKPVZ } from "@/components/sdekAPI/getPVZ";
+import PriceTag from "@/components/PriceTag";
+import { submitDelivery } from "./submitDelivery";
 import dynamic from "next/dynamic";
 
 const OpenStreetMap = dynamic(() => import("@/components/map"), {
@@ -20,8 +22,13 @@ export function ShippingForm() {
   const [isClient, setIsClient] = useState(false);
   const [cityName, setCityName] = useState();
   const [isCity, setCity] = useState(false);
-  const [pvz, setPvz] = useState();
+  const [pvzs, setPvzs] = useState();
   const [sdekId, setSdekId] = useState();
+  const [sdekPvz, setSdekPvz] = useState();
+
+  function confirmSdekPvz(id) {
+    setSdekPvz(id);
+  }
 
   useEffect(() => {
     setIsClient(true);
@@ -32,7 +39,7 @@ export function ShippingForm() {
       <h1 className="text-3xl font-bold text-center mb-5">
         Выберите способ доставки
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 items-center my-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center">
         {isClient && (
           <AddressSuggestions
             token={process.env.NEXT_PUBLIC_DA_DATA_KEY}
@@ -55,9 +62,7 @@ export function ShippingForm() {
             className="btn-primary btn ml-5 w-48 justify-self-end"
             onClick={() =>
               startTransition(async () => {
-                console.log(value);
                 const sdekId = await findSDEKById(value.data.city_kladr_id);
-
                 if (sdekId.suggestions.length !== 0) {
                   setSdekId(sdekId.suggestions[0].data.cdek_id);
                   const tarifs = await getSDEKAvailableTarif(
@@ -84,18 +89,20 @@ export function ShippingForm() {
               setValue(null);
               setTarifs(null);
               setTarif(null);
-              setPvz(null);
+              setPvzs(null);
               setCityName(null);
               setaddress(null);
+              setSdekId(null);
+              setSdekPvz(null);
             }}
           >
             Изменить город
           </button>
         )}
       </div>
-      <div className="flex">
+      <div className="flex my-4">
         {isCity && (
-          <h1 className="font-bold my-5 grow">
+          <h1 className="text-lg font-bold grow">
             Город доставки -
             {" " +
               value.data.region_with_type +
@@ -118,16 +125,19 @@ export function ShippingForm() {
                 className="my-3 p-3 border-violet-600 border"
                 key={e.tariff_code}
               >
-                <label className="label cursor-pointer">
-                  <span className="label-text">
-                    {"Стоимость " +
-                      e.delivery_sum +
-                      " руб" +
-                      " " +
-                      e.tariff_code +
-                      " " +
-                      e.tariff_name}
-                  </span>
+                <label className="flex justify-between items-center cursor-pointer p-2">
+                  {e.tariff_code === 482 && (
+                    <h1 className="font-bold grow ">СДЭК, до двери</h1>
+                  )}
+                  {e.tariff_code === 483 && (
+                    <h1 className="font-bold grow">СДЭК, в пункт выдачи</h1>
+                  )}
+                  {e.tariff_code === 486 && (
+                    <h1 className="font-bold grow">СДЭК, в постамат</h1>
+                  )}
+
+                  <h1 className=" mx-3">Цена:</h1>
+                  <PriceTag price={e.delivery_sum} className="mr-3" />
 
                   <input
                     type="radio"
@@ -135,9 +145,6 @@ export function ShippingForm() {
                     className="radio checked:bg-red-500"
                     id={e.tariff_code}
                     value={e.tariff_code}
-                    // onChange={(e) => {
-                    //   setTarif(e.target.value);
-                    // }}
                     onClick={(e) =>
                       startTransition(async () => {
                         setTarif(e.target.value);
@@ -146,7 +153,7 @@ export function ShippingForm() {
                             sdekId,
                             (e.target.value == 486 && "POSTMAT") || "PVZ"
                           );
-                          setPvz(pvzs);
+                          setPvzs(pvzs);
                         } else {
                           null;
                         }
@@ -158,40 +165,71 @@ export function ShippingForm() {
             )
         )}
 
-      <div>
-        {tarif == 482 && (
-          <div>
-            <h1>Выбран тариф 482 Делаем блок выбора адреса</h1>
+      {tarif == 482 && (
+        <div className="my-3 p-3 border-violet-600 border">
+          <h1 className="text-lg font-bold mb-5">Адрес доставки</h1>
+          {isClient && (
+            <AddressSuggestions
+              token={process.env.NEXT_PUBLIC_DA_DATA_KEY}
+              value={address}
+              onChange={setaddress}
+              minChars={3}
+              hintText={"Выберите вариант или продолжите ввод"}
+              delay={500}
+              filterLocations={[{ city: cityName }]}
+            />
+          )}
 
-            {isClient && (
-              <AddressSuggestions
-                token={process.env.NEXT_PUBLIC_DA_DATA_KEY}
-                value={address}
-                onChange={setaddress}
-                minChars={3}
-                hintText={"Выберите вариант или продолжите ввод"}
-                delay={500}
-                filterLocations={[{ city: cityName }]}
-              />
-            )}
-
+          <div className="flex items-center">
             <textarea
               placeholder="Комментарий к заказу (например, запасной номер телефона)"
-              className="textarea textarea-bordered textarea-md w-full mt-5"
+              className="textarea textarea-bordered textarea-md w-full mt-5 mr-5"
             ></textarea>
+            <button className="btn btn-primary mt-2">К оплате</button>
           </div>
-        )}
+        </div>
+      )}
 
-        {tarif == 483 && (
-          <div >
-            <OpenStreetMap longitude={pvz[0].location.longitude} latitude={pvz[0].location.latitude}/>
-            {/* <OpenStreetMap /> */}
-            <h1>Выбран тариф 483</h1>
-          </div>
-        )}
+      {(tarif == 483 || tarif == 486) && (
+        <div>
+          {!sdekPvz && (
+            <OpenStreetMap
+              pvzs={pvzs}
+              city={value}
+              stateFunction={confirmSdekPvz}
+            />
+          )}
 
-        {tarif == 486 && <h1>Выбран тариф 486{JSON.stringify(pvz)}</h1>}
-      </div>
+          {sdekPvz && (
+            <div className="my-3 p-3 border-violet-600 border">
+              <div className="flex justify-between">
+                <h1 className="text-lg font-bold">Выбран пункт выдачи</h1>
+                <button
+                  className="underline text-sm"
+                  onClick={() => setSdekPvz(false)}
+                >
+                  Изменить пункт выдачи
+                </button>
+              </div>
+
+              <h1 className="text-lg mt-2">{sdekPvz.location.address_full}</h1>
+              <h1 className="text-sm">{sdekPvz.work_time}</h1>
+              <div className="flex items-center">
+                <textarea
+                  placeholder="Комментарий к заказу (например, запасной номер телефона)"
+                  className="textarea textarea-bordered textarea-md w-full mt-5 mr-5"
+                ></textarea>
+                <button
+                  className="btn btn-primary mt-2"
+                  onClick={() => submitDelivery("sadf")}
+                >
+                  К оплате
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

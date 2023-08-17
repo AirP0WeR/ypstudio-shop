@@ -1,18 +1,20 @@
 "use client";
 import React, { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
-import { icon } from "leaflet"
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { icon } from "leaflet";
 
+export default function OpenStreetMap({ pvzs, city, stateFunction}) {
 
+  const [center, setCenter] = useState({
+    lat: city.data.geo_lat,
+    lng: city.data.geo_lon,
+  });
 
-export default function OpenStreetMap({ latitude, longitude }) {
-
-  const [center, setCenter] = useState({ lat: latitude, lng: longitude });
-  const ZOOM_LEVEL = 12;
+  const ZOOM_LEVEL = 11;
   const ICON = icon({
-    iconUrl: "/images/pin_484167.png",
-    iconSize: [32, 32],
-  })
+    iconUrl: "/images/pin_icon_green.svg.png",
+    iconSize: [23, 32],
+  });
 
   return (
     <MapContainer center={center} zoom={ZOOM_LEVEL} style={{ height: "400px" }}>
@@ -21,15 +23,21 @@ export default function OpenStreetMap({ latitude, longitude }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
+      {pvzs.map((e) => (
         <Marker
-          position={[center.lat, center.lng]}
+          key={e.code}
+          position={[e.location.latitude, e.location.longitude]}
           icon={ICON}
         >
           <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
+            <h1 className="text-lg font-bold">{e.location.address}</h1>
+            <h1 className="text-xs mt-2">{e.work_time}</h1>
+            <button className="btn btn-primary mt-2 w-full" onClick={() => stateFunction(e)}>
+              Выбрать пункт
+            </button>
           </Popup>
         </Marker>
-
+      ))}
     </MapContainer>
   );
 }
