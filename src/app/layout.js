@@ -2,6 +2,7 @@ import Footer from "./Footer";
 import Navbar from "./navbar/Navbar";
 import "./globals.css";
 import SessionProvider from "./SessionProvider";
+import Toaster from "@/components/Toasters";
 
 export const metadata = {
   title: "YPStudio",
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
         <SessionProvider>
           <Navbar />
           <main className="p-4 w-full max-w-7xl m-auto min-w-[300px] flex-grow">
+            <Toaster />
             {children}
           </main>
           <Footer />

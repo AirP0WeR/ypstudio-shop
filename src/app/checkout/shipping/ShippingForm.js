@@ -8,6 +8,7 @@ import { getSDEKPVZ } from "@/components/sdekAPI/getPVZ";
 import PriceTag from "@/components/PriceTag";
 import { submitDelivery } from "./submitDelivery";
 import dynamic from "next/dynamic";
+import { notifyError } from "@/components/Toasters";
 
 const OpenStreetMap = dynamic(() => import("@/components/map"), {
   ssr: false,
@@ -72,7 +73,7 @@ export function ShippingForm() {
                   setCity(true);
                   setCityName(value.data.city);
                 } else {
-                  alert("В данный город нет доставки, выберите другой город");
+                  notifyError("В данный город нет доставки, выберите другой город")
                 }
               })
             }
