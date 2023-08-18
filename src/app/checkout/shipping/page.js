@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ShippingForm } from "./ShippingForm";
 import CartItems from "@/components/cartItems";
-import { updateUser, getUser } from "@/lib/db/user";
+
 
 export default async function CheckoutPage() {
   return (

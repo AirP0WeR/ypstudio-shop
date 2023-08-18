@@ -22,9 +22,8 @@ export function ShippingForm() {
   const [isPending, startTransition] = useTransition();
   const [isClient, setIsClient] = useState(false);
   const [cityName, setCityName] = useState();
-  const [isCity, setCity] = useState(false);
   const [pvzs, setPvzs] = useState();
-  const [sdekId, setSdekId] = useState();
+  const [deliveryCityIds, setDeliveryCityIds] = useState();
   const [sdekPvz, setSdekPvz] = useState();
 
   function confirmSdekPvz(id) {
@@ -51,29 +50,32 @@ export function ShippingForm() {
             delay={500}
             filterFromBound="city"
             filterToBound="city"
-            inputProps={{ disabled: isCity, placeholder: "Выберите город" }}
+            inputProps={{ disabled: cityName, placeholder: "Выберите город" }}
             renderOption={(suggestion) => {
               return suggestion.data.city;
             }}
           />
         )}
-        {!isCity && (
+        {!cityName && (
           <button
             disabled={!value}
             className="btn-primary btn ml-5 w-48 justify-self-end"
             onClick={() =>
               startTransition(async () => {
-                const sdekId = await findSDEKById(value.data.city_kladr_id);
-                if (sdekId.suggestions.length !== 0) {
-                  setSdekId(sdekId.suggestions[0].data.cdek_id);
+                const sdekCityIdData = await findSDEKById(
+                  value.data.city_kladr_id
+                );
+                if (sdekCityIdData.suggestions.length !== 0) {
+                  setDeliveryCityIds(sdekCityIdData);
                   const tarifs = await getSDEKAvailableTarif(
-                    sdekId.suggestions[0].data.cdek_id
+                    sdekCityIdData.suggestions[0].data.cdek_id
                   );
                   setTarifs(tarifs);
-                  setCity(true);
                   setCityName(value.data.city);
                 } else {
-                  notifyError("В данный город нет доставки, выберите другой город")
+                  notifyError(
+                    "В данный город нет доставки, выберите другой город"
+                  );
                 }
               })
             }
@@ -81,19 +83,18 @@ export function ShippingForm() {
             Сохранить
           </button>
         )}
-        {isCity && (
+        {cityName && (
           <button
             className="btn-primary btn ml-5 w-48 justify-self-end"
-            disabled={!isCity}
+            disabled={!cityName}
             onClick={() => {
-              setCity(false);
               setValue(null);
               setTarifs(null);
               setTarif(null);
               setPvzs(null);
               setCityName(null);
               setaddress(null);
-              setSdekId(null);
+              setDeliveryCityIds(null);
               setSdekPvz(null);
             }}
           >
@@ -102,7 +103,7 @@ export function ShippingForm() {
         )}
       </div>
       <div className="flex my-4">
-        {isCity && (
+        {cityName && (
           <h1 className="text-lg font-bold grow">
             Город доставки -
             {" " +
@@ -151,7 +152,7 @@ export function ShippingForm() {
                         setTarif(e.target.value);
                         if (e.target.value == 483 || e.target.value == 486) {
                           const pvzs = await getSDEKPVZ(
-                            sdekId,
+                            deliveryCityIds.suggestions[0].data.cdek_id,
                             (e.target.value == 486 && "POSTMAT") || "PVZ"
                           );
                           setPvzs(pvzs);
@@ -186,7 +187,16 @@ export function ShippingForm() {
               placeholder="Комментарий к заказу (например, запасной номер телефона)"
               className="textarea textarea-bordered textarea-md w-full mt-5 mr-5"
             ></textarea>
-            <button className="btn btn-primary mt-2">К оплате</button>
+            <button
+              className="btn btn-primary mt-2"
+              onClick={() =>
+                startTransition(async () => {
+                  submitDelivery({ value, sdekPvz, address, deliveryCityIds });
+                })
+              }
+            >
+              К оплате
+            </button>
           </div>
         </div>
       )}
@@ -222,7 +232,16 @@ export function ShippingForm() {
                 ></textarea>
                 <button
                   className="btn btn-primary mt-2"
-                  onClick={() => submitDelivery("sadf")}
+                  onClick={() =>
+                    startTransition(async () => {
+                      submitDelivery({
+                        value,
+                        sdekPvz,
+                        address,
+                        deliveryCityIds,
+                      });
+                    })
+                  }
                 >
                   К оплате
                 </button>

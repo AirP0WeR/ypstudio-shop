@@ -1,5 +1,7 @@
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
+import CartItems from "@/components/cartItems";
+
 import Link from "next/link";
 
 export default async function CheckoutPage() {
@@ -7,25 +9,18 @@ export default async function CheckoutPage() {
 
   return (
     <div>
-      <div className="text-sm breadcrumbs">
-        <ul>
-          <li>
-            <Link className="link" href="/checkout">
-              Контактная информация
-            </Link>
-          </li>
-          <li>
-            <Link className="link" href="/checkout">
-              Доставка
-            </Link>
-          </li>
-          <li>
-            <Link className="font-bold link" href="/checkout">
-              Оплата
-            </Link>
-          </li>
-        </ul>
-      </div>
+      <ul className="steps w-full">
+        <li className="step step-primary">
+          <Link href="/cart">Корзина</Link>
+        </li>
+        <li className="step step-primary">
+          <Link href="/checkout">Контакты</Link>
+        </li>
+        <li className="step step-primary">
+          <Link href="/checkout/shipping">Доставка</Link>
+        </li>
+        <li className="step step-primary">Оплата</li>
+      </ul>
       <div className="grid grid-cols-1 gap-4 text-center sm:grid-cols-2">
         <div>
           <h1></h1>
@@ -42,7 +37,7 @@ export default async function CheckoutPage() {
           </div>
         </div>
 
-        <div className="bg-red-100">Компонент с товарами в корзине</div>
+        <CartItems />
       </div>
     </div>
   );

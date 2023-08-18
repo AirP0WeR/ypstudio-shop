@@ -24,12 +24,13 @@ model Product {
 }
 
 model Cart {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  items     CartItem[]
-  userId    String?    @db.ObjectId
-  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  items        CartItem[]
+  userId       String?        @db.ObjectId
+  user         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  DeliveryData DeliveryData[]
 
   @@map("carts")
 }
@@ -76,9 +77,9 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String?   @unique
+  email         String?        @unique
   phonenumber   String?
   emailVerified DateTime?
   image         String?
@@ -86,8 +87,45 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Cart          Cart[]
+  deliveryData  DeliveryData[]
 
   @@map("user")
+}
+
+model DeliveryData {
+  id                         String  @id @default(auto()) @map("_id") @db.ObjectId
+  User                       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                     String  @db.ObjectId
+  Cart                       Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId                     String  @unique @db.ObjectId
+  country                    String?
+  country_iso_code           String?
+  region_fias_id             String?
+  region_kladr_id            String?
+  region_with_type           String?
+  city_fias_id               String?
+  city_kladr_id              String?
+  city_with_type             String?
+  // данные о поставщиках
+  city_boxberry_id           Int?
+  city_cdek_id               Int?
+  city_dpd_id                Int?
+  // Данные выбранном о ПВЗ
+  sdek_pvz_code              String?
+  sdek_pvz_uuid              String?
+  sdek_pvz_work_time         String?
+  sdek_pvz_type              String?
+  sdek_pvz_address_full      String?
+  sdek_pvz_longitude         Float?
+  sdek_pvz_latitude          Float?
+  // Данные о выбраном адресе
+  address_unrestricted_value String?
+  address_postal_code        Int?
+  address_geo_lat            Float?
+  address_geo_lon            Float?
+  address_city               String?
+
+  @@map("deliverydata")
 }
 
 model VerificationToken {
