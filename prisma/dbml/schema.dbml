@@ -1,0 +1,228 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table products {
+  id String [pk]
+  brand String [not null]
+  category String [not null]
+  countInStock Int [not null]
+  description String [not null]
+  imageUrl String [not null]
+  name String [not null]
+  price Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  CartItem cartitems [not null]
+  OrderItems order_items [not null]
+}
+
+Table cartitems {
+  id String [pk]
+  productId String [not null]
+  product products [not null]
+  quantity Int [not null]
+  cartId String [not null]
+  cart carts [not null]
+}
+
+Table carts {
+  id String [pk]
+  items cartitems [not null]
+  userId String
+  user user
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table orders {
+  id String [pk]
+  userId String [not null]
+  user user [not null]
+  paymentInfo paymentinfo
+  deliveryInfo deliverydata
+  userOrderInfo user_order_info
+  orderItems order_items [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table user_order_info {
+  id String [pk]
+  order orders [not null]
+  orderId String [unique, not null]
+  name String
+  email String
+  phone String
+}
+
+Table order_items {
+  id String [pk]
+  orderId String
+  order orders
+  productId String
+  product products
+  quantity Int
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table paymentinfo {
+  id String [pk]
+  uuid String [unique]
+  paymentStatus String
+  total_summ Float
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  order orders [not null]
+  orderId String [unique, not null]
+}
+
+Table deliverydata {
+  id String [pk]
+  order orders [not null]
+  orderId String [unique, not null]
+  deliveryMethod String
+  country String
+  country_iso_code String
+  region_fias_id String
+  region_kladr_id String
+  region_with_type String
+  city_fias_id String
+  city_kladr_id String
+  city_with_type String
+  city_boxberry_id Int
+  city_cdek_id Int
+  city_dpd_id Int
+  sdek_pvz_code String
+  sdek_pvz_uuid String
+  sdek_pvz_work_time String
+  sdek_pvz_type String
+  sdek_pvz_address_full String
+  sdek_pvz_longitude Float
+  sdek_pvz_latitude Float
+  address_unrestricted_value String
+  address_postal_code Int
+  address_geo_lat Float
+  address_geo_lon Float
+  address_city String
+}
+
+Table accounts {
+  id String [pk]
+  userId String [not null]
+  type String [not null]
+  provider String [not null]
+  providerAccountId String [not null]
+  refresh_token String
+  access_token String
+  expires_at Int
+  token_type String
+  scope String
+  id_token String
+  session_state String
+  user user [not null]
+
+  indexes {
+    (provider, providerAccountId) [unique]
+  }
+}
+
+Table sessions {
+  id String [pk]
+  sessionToken String [unique, not null]
+  userId String [not null]
+  expires DateTime [not null]
+  user user [not null]
+}
+
+Table user {
+  id String [pk]
+  name String
+  email String [unique]
+  phonenumber String
+  emailVerified DateTime
+  image String
+  role String
+  accounts accounts [not null]
+  sessions sessions [not null]
+  Cart carts [not null]
+  orders orders [not null]
+  userAddress user_address
+}
+
+Table user_address {
+  id String [pk]
+  userId String [unique]
+  user user
+  deliveryMethod String
+  country String
+  country_iso_code String
+  region_fias_id String
+  region_kladr_id String
+  region_with_type String
+  city_fias_id String
+  city_kladr_id String
+  city_with_type String
+  city_boxberry_id Int
+  city_cdek_id Int
+  city_dpd_id Int
+  sdek_pvz_code String
+  sdek_pvz_uuid String
+  sdek_pvz_work_time String
+  sdek_pvz_type String
+  sdek_pvz_address_full String
+  sdek_pvz_longitude Float
+  sdek_pvz_latitude Float
+  address_unrestricted_value String
+  address_postal_code Int
+  address_geo_lat Float
+  address_geo_lon Float
+  address_city String
+}
+
+Table verificationtokens {
+  id String [pk]
+  identifier String [not null]
+  token String [unique, not null]
+  expires DateTime [not null]
+
+  indexes {
+    (identifier, token) [unique]
+  }
+}
+
+Table sdek {
+  id String [pk]
+  access_token String [not null]
+  token_type String [not null]
+  expires_in DateTime [not null]
+  scope String [not null]
+  jti String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Ref: cartitems.productId > products.id [delete: Cascade]
+
+Ref: cartitems.cartId > carts.id [delete: Cascade]
+
+Ref: carts.userId > user.id [delete: Cascade]
+
+Ref: orders.userId > user.id [delete: Cascade]
+
+Ref: user_order_info.orderId - orders.id [delete: Cascade]
+
+Ref: order_items.orderId > orders.id [delete: Cascade]
+
+Ref: order_items.productId > products.id [delete: Cascade]
+
+Ref: paymentinfo.orderId - orders.id [delete: Cascade]
+
+Ref: deliverydata.orderId - orders.id [delete: Cascade]
+
+Ref: accounts.userId > user.id [delete: Cascade]
+
+Ref: sessions.userId > user.id [delete: Cascade]
+
+Ref: user_address.userId - user.id [delete: Cascade]

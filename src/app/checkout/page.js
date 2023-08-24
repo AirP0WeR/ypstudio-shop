@@ -3,6 +3,7 @@ import FormSubmittButton from "@/components/FormSubmitButton";
 import CartItems from "@/components/cartItems";
 import { updateUser, getUser } from "@/lib/db/user";
 import { redirect } from "next/navigation";
+import { updateOrderUser } from "@/lib/db/orders";
 
 async function editProfile(formData, ...props) {
   "use server";
@@ -12,6 +13,8 @@ async function editProfile(formData, ...props) {
     throw Error("Не хватает данных");
   }
   const user = await updateUser(name, phone);
+  await updateOrderUser(name, phone, user?.email)
+
   redirect("/checkout/shipping");
 }
 

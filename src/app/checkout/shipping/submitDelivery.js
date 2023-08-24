@@ -1,19 +1,20 @@
 "use server";
 import { redirect } from "next/navigation";
-import {
-  createDeliveryInfo,
-  udateDeliveryInfo,
-  getDeliveryInfo,
-} from "@/lib/db/deliveryInfo";
+import { upsertUserDelivery } from "@/lib/db/deliveryInfo";
+import { updateOrderDelivery } from "@/lib/db/orders";
 
 export async function submitDelivery({
   value,
   sdekPvz,
   address,
   deliveryCityIds,
+  tarif,
 }) {
+
+
   const deliveryData = {
     // данные о городе, стргане герионе
+    deliveryMethod: tarif || null,
     country: value?.data.country || null,
     country_iso_code: value?.data.country_iso_code || null,
     region_fias_id: value?.data.region_fias_id || null,
@@ -41,10 +42,8 @@ export async function submitDelivery({
     address_geo_lon: parseFloat(address?.data.geo_lon) || null,
     address_city: address?.data.city || null,
   };
-
-  (await getDeliveryInfo())
-    ? udateDeliveryInfo(deliveryData)
-    : createDeliveryInfo(deliveryData);
+  await upsertUserDelivery(deliveryData);
+  await updateOrderDelivery(deliveryData);
 
   redirect("/checkout/payment");
 }

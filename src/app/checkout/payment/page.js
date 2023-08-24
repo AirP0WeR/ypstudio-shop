@@ -1,11 +1,15 @@
-import { authOptions } from "../../api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
 import CartItems from "@/components/cartItems";
-
+import { PaymentForm } from "./PaymentForm";
 import Link from "next/link";
+import { getPaymentInfo, createPaymentInfo } from "@/lib/db/payment";
+import { getCart } from "@/lib/db/cart";
 
 export default async function CheckoutPage() {
-  const session = await getServerSession(authOptions);
+  // const paymentInfo = (await getPaymentInfo()) ?? (await createPaymentInfo());
+  // const cart = await getCart();
+
+  // console.log(paymentInfo.uuid);
+  // console.log(cart.subtotal);
 
   return (
     <div>
@@ -21,21 +25,9 @@ export default async function CheckoutPage() {
         </li>
         <li className="step step-primary">Оплата</li>
       </ul>
-      <div className="grid grid-cols-1 gap-4 text-center sm:grid-cols-2">
-        <div>
-          <h1></h1>
-          <h1>Город</h1>
-          <input defaultValue="Москва"></input>
-          <h1>Улица</h1>
-          <input></input>
-          <h1>Дом</h1>
-          <input></input>
-          <div>
-            <Link href="/checkout/payment">
-              <button className="btn btn-primary">Оплатить</button>
-            </Link>
-          </div>
-        </div>
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-5">
+        {/* <PaymentForm uuid={paymentInfo.uuid} subtotal={cart.subtotal}/> */}
 
         <CartItems />
       </div>

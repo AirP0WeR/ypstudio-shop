@@ -3,7 +3,7 @@ import { formatPrice } from "@/lib/format";
 import CartEntry from "./CartEntry";
 import { setProductQuantity } from "./actions";
 import Link from "next/link";
-
+import { CreateOrderButton } from "./CreateOrderButton";
 
 export default async function CartPage() {
   const cart = await getCart();
@@ -25,16 +25,10 @@ export default async function CartPage() {
         </p>
         {!cart?.items.length ? (
           <Link href="/">
-          <button className="btn-primary btn sm:w-[200px]">
-            В магазин
-          </button>
-        </Link>
-        ) : (
-          <Link href="/checkout">
-            <button className="btn-primary btn sm:w-[200px]">
-              Оформить заказ
-            </button>
+            <button className="btn-primary btn sm:w-[200px]">В магазин</button>
           </Link>
+        ) : (
+          <CreateOrderButton />
         )}
       </div>
     </div>

@@ -191,7 +191,7 @@ export function ShippingForm() {
               className="btn btn-primary mt-2"
               onClick={() =>
                 startTransition(async () => {
-                  submitDelivery({ value, sdekPvz, address, deliveryCityIds });
+                  submitDelivery({ value, sdekPvz, address, deliveryCityIds, tarif });
                 })
               }
             >
@@ -239,6 +239,7 @@ export function ShippingForm() {
                         sdekPvz,
                         address,
                         deliveryCityIds,
+                        tarif
                       });
                     })
                   }
