@@ -72,6 +72,8 @@ Table paymentinfo {
   uuid String [unique]
   paymentStatus String
   total_summ Float
+  yooPaymentId String [unique]
+  yooPaymentCreatedAt DateTime
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   order orders [not null]

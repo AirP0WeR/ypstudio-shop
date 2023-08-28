@@ -1,60 +1,100 @@
+import { getUser } from "@/lib/db/user";
+import { getOrders } from "@/lib/db/orders";
+import CheckPaymentButton from "./CheckPaymentButton";
+import { formatPrice } from "@/lib/format";
 
 export default async function Profile() {
+  const user = await getUser();
+  const orders = await getOrders();
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-3">
-          <h2>User Profile</h2>
-          <form>
-          <div className="mb-3">
-              <label className="form-label">Имя</label>
-              <input className="form-control" type='string' placeholder='Имя'></input>
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Email Address</label>
-              <input className="form-control" type='email' placeholder='Enter email'></input>
-            </div>
-            <button className="btn btn-primary" type='submit' variant='primary'>
-              Update
-            </button>
-          </form>
-        </div>
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 mt-5">
+      <div className="bg-blue-100">
+        <h1>Профиль пользователя</h1>
+        <form>
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text">Email</span>
+            </label>
+            <input
+              type="text"
+              placeholder={user?.email}
+              defaultValue={user?.email}
+              disabled
+              className="input input-bordered w-full max-w-xs"
+            />
+          </div>
 
-        <div className="col-9">
-          <h2>My Orders</h2>
-          <table className='table table-striped table-hover table-responsive'>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>DATE</th>
-                <th>TOTAL</th>
-                <th>PAID</th>
-                <th>DELIVERED</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>id</td>
-                <td>order.createdAt</td>
-                <td>order.totalPrice</td>
-                <td>
-                  order.isPaid
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text">Имя</span>
+            </label>
+            <input
+              type="text"
+              defaultValue={user?.name}
+              placeholder={user?.name}
+              className="input input-bordered w-full max-w-xs"
+            />
+          </div>
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text">Телефон</span>
+            </label>
+            <input
+              type="text"
+              defaultValue={user?.phonenumber}
+              placeholder={user?.phonenumber}
+              className="input input-bordered w-full max-w-xs"
+            />
+          </div>
+          <button
+            className="btn btn-primary mt-3"
+            type="submit"
+            variant="primary"
+          >
+            Обновить
+          </button>
+        </form>
+      </div>
 
-                </td>
-                <td>
-
-                </td>
-                <td>
-                  <button className='btn btn-primary' variant='light'>
-                    Подробнее
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div className="bg-red-100 col-span-2">
+        Заказы
+        {!orders ? (
+          <h1>Нет заказов</h1>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Дата</th>
+                  <th>Сумма</th>
+                  <th>Статус оплаты</th>
+                  <th>Статус доставки</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((e) => (
+                  <tr key={e.id}>
+                    <th>{e.id}</th>
+                    <td>{e.createdAt.toLocaleString("ru-RU")}</td>
+                    <td>{formatPrice(e.paymentInfo.total_summ)}</td>
+                    <td>
+                      {e.paymentInfo.paymentStatus == "succeeded" ? (
+                        "Оплачено"
+                      ) : (
+                        <CheckPaymentButton
+                          paymentId={e.paymentInfo.yooPaymentId}
+                        />
+                      )}
+                    </td>
+                    <td>Не доставлено</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

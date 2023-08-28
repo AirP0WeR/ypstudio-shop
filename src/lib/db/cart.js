@@ -138,3 +138,9 @@ function mergeCartItems(...cartItems) {
     return acc;
   }, []);
 }
+
+export async function deleteCart(id) {
+  await prisma.cart.delete({
+    where: { id: id },
+  });
+}

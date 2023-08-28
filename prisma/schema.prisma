@@ -89,14 +89,16 @@ model OrderItems {
 }
 
 model PaymentInfo {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  uuid          String?  @unique
-  paymentStatus String?
-  total_summ    Float?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  order         Orders   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId       String   @unique @db.ObjectId
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+  uuid                String?   @unique
+  paymentStatus       String?
+  total_summ          Float?
+  yooPaymentId        String?   @unique
+  yooPaymentCreatedAt DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  order               Orders    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId             String    @unique @db.ObjectId
 
   @@map("paymentinfo")
 }

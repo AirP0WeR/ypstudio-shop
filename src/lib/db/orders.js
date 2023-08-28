@@ -4,6 +4,29 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/db/prisma";
 import { getCart } from "./cart";
 
+export async function getOrders() {
+  const session = await getServerSession(authOptions);
+  const order = await prisma.Orders.findMany({
+    where: {
+      userId: session.user.id,
+      paymentInfo: {
+        NOT: {
+          paymentStatus: "new",
+        },
+      },
+    },
+    orderBy: [
+      {
+        id: "desc",
+      },
+    ],
+    include: {
+      paymentInfo: true,
+    },
+  });
+  return order;
+}
+
 export async function getOrder() {
   const session = await getServerSession(authOptions);
 
@@ -13,6 +36,9 @@ export async function getOrder() {
       paymentInfo: {
         paymentStatus: "new",
       },
+    },
+    include: {
+      paymentInfo: true,
     },
   });
   return order;
@@ -128,22 +154,17 @@ export async function updateOrderDelivery(deliveryData) {
   });
 }
 
-
-// доделать
-export async function updateOrderPayment() {
-  const order = await getOrder();
-
+export async function updateOrderPayment(order, json) {
   await prisma.Orders.update({
     where: { id: order?.id },
     data: {
-      userOrderInfo: {
+      paymentInfo: {
         update: {
-          name,
-          email,
-          phone,
+          paymentStatus: json?.status,
+          yooPaymentId: json?.id,
+          yooPaymentCreatedAt: json?.created_at,
         },
       },
     },
   });
 }
-
