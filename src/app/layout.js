@@ -15,8 +15,12 @@ export default function RootLayout({ children }) {
       <body className="flex flex-col h-screen">
         <SessionProvider>
           <Navbar />
-          <main className="p-4 w-full max-w-7xl m-auto min-w-[300px] flex-grow">
-            <Toaster />
+          <main className="p-4 w-full max-w-7xl m-auto min-w-[360px] flex-grow">
+            <Toaster
+              containerStyle={{
+                top: 200,
+              }}
+            />
             {children}
           </main>
           <Footer />

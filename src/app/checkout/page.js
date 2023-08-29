@@ -1,25 +1,18 @@
 import Link from "next/link";
 import FormSubmittButton from "@/components/FormSubmitButton";
 import CartItems from "@/components/cartItems";
-import { updateUser, getUser } from "@/lib/db/user";
+import { getUser } from "@/lib/db/user";
+import { editUserProfile } from "@/lib/db/user";
 import { redirect } from "next/navigation";
-import { updateOrderUser } from "@/lib/db/orders";
-
-async function editProfile(formData, ...props) {
-  "use server";
-  const name = formData.get("name")?.toString();
-  const phone = formData.get("phone")?.toString();
-  if (!name || !phone) {
-    throw Error("Не хватает данных");
-  }
-  const user = await updateUser(name, phone);
-  await updateOrderUser(name, phone, user?.email)
-
-  redirect("/checkout/shipping");
-}
 
 export default async function CheckoutPage() {
   const user = await getUser();
+
+  async function redirectToShipping(formData) {
+    "use server";
+    editUserProfile(formData)
+    redirect("/checkout/shipping");
+  }
 
   return (
     <div>
@@ -34,7 +27,7 @@ export default async function CheckoutPage() {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-5">
         <div>
-          <form action={editProfile} className="form-control">
+          <form action={redirectToShipping} className="form-control">
             <h1 className="text-3xl font-bold text-center">Контакты</h1>
 
             {/* Форма Почта */}
@@ -71,7 +64,7 @@ export default async function CheckoutPage() {
             <div className="form-control w-full max-w-xs">
               <label className="label">
                 <span className="label-text text-sm mt-3">
-                  Телефон в формате +79991234567
+                  Телефон в формате 79991234567
                 </span>
               </label>
               <input
@@ -79,8 +72,8 @@ export default async function CheckoutPage() {
                 type="tel"
                 name="phone"
                 // pattern="[+]{1}[7]-{1}[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                pattern="[+]{1}[0-9]{1,3}[0-9]{10}"
-                placeholder="+79991234567"
+                pattern="[0-9]{1,3}[0-9]{10}"
+                placeholder="79991234567"
                 defaultValue={user.phonenumber}
                 className="input input-bordered w-full max-w-xs"
               />

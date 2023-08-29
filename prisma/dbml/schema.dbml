@@ -151,6 +151,16 @@ Table user {
   Cart carts [not null]
   orders orders [not null]
   userAddress user_address
+  Messages messages [not null]
+}
+
+Table messages {
+  id String [pk]
+  name String
+  email String
+  message String
+  userId String
+  user user
 }
 
 Table user_address {
@@ -226,5 +236,7 @@ Ref: deliverydata.orderId - orders.id [delete: Cascade]
 Ref: accounts.userId > user.id [delete: Cascade]
 
 Ref: sessions.userId > user.id [delete: Cascade]
+
+Ref: messages.userId > user.id [delete: Cascade]
 
 Ref: user_address.userId - user.id [delete: Cascade]

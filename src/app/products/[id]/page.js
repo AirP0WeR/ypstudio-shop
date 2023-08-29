@@ -14,19 +14,19 @@ const getProduct = cache(async (id) => {
   return product;
 });
 
-export async function generateMetadata({
-  params: { id }
-}) {
-  const product = await getProduct(id);
+// export async function generateMetadata({
+//   params: { id }
+// }) {
+//   const product = await getProduct(id);
 
-  return {
-    title: product.name + " - Flowmazon",
-    description: product.description,
-    openGraph: {
-      images: [{ url: product.imageUrl }],
-    },
-  };
-}
+//   return {
+//     title: product.name + " - Flowmazon",
+//     description: product.description,
+//     openGraph: {
+//       images: [{ url: product.imageUrl }],
+//     },
+//   };
+// }
 
 export default async function ProductPage({
   params: { id },

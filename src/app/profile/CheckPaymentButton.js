@@ -5,10 +5,10 @@ export default async function CheckPaymentButton({ paymentId }) {
   const paymentStatus = await getYookassaPaymentStatus(paymentId);
   let buttonLabel;
   if (paymentStatus?.status == "canceled") {
-    buttonLabel = "Отменён";
+    buttonLabel = "Заказ отменён";
   } else {
     buttonLabel = (
-      <Link href={paymentStatus?.confirmation.confirmation_url}>
+      <Link href={paymentStatus?.confirmation?.confirmation_url}>
         <button className="btn">Оплатить</button>
       </Link>
     );
